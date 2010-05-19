@@ -18,6 +18,8 @@
 	WebNest Hacks
 	- Optimized the jQuery function to run selections off a context|document.find instead of creating a new jQuery object
 	- Attached rootjQuery to the jQuery.root namespace for quick access
+	- Attached jQuery wrapped window to the jQuery.win namespace
+	- Attached now() method to jQuery.now namespace, again, for quick access
 	- Enhanced the toArray utility to take an argument(array) or default to jQuery object to run the slice prototype on,
 		Allows for jQuery.toArray( arguments ) quick access
 	- Added a few more browser support checks
@@ -512,7 +514,7 @@ jQuery.extend({
 	},
 	
 	parseJSON: function( data ) {
-		if ( typeof data !== "string" || !data ) {
+		if ( ! data || typeof data != "string" ) {
 			return null;
 		}
 
@@ -754,7 +756,9 @@ if ( indexOf ) {
 }
 
 // All jQuery objects should point back to these
-rootjQuery = jQuery.root = jQuery(document);
+rootjQuery = jQuery(document);
+jQuery.root = jQuery(document);
+jQuery.win = jQuery(window);
 
 // Cleanup functions for the document ready method
 if ( document.addEventListener ) {
@@ -871,7 +875,7 @@ function now() {
 		storage: ('localStorage' in window),
 
 		// Tracking hashchange event
-		hashchange: ('hashchange' in window),
+		hashchange: ('onhashchange' in window),
 
 		// Tracking history support
 		history: ('history' in window),
@@ -1019,6 +1023,8 @@ jQuery.props = {
 var expando = "jQuery" + now(), uuid = 0, windowData = {};
 
 jQuery.extend({
+	now: now,
+
 	cache: {},
 	
 	expando:expando,
